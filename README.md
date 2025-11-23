@@ -1,6 +1,6 @@
 # YOLOv11 Video Counter
 
-Sistema de contagem de pessoas e veículos em vídeos utilizando YOLOv11 da Ultralytics.
+Sistema completo de contagem de pessoas e veículos em vídeos utilizando YOLOv11 da Ultralytics, com interface web moderna.
 
 ## Descrição
 
@@ -8,48 +8,119 @@ Este projeto utiliza o modelo YOLO11 (standard nano model) para:
 - Contar o número de pessoas presentes em um vídeo em todos os momentos
 - Contar o número de veículos presentes em um vídeo em todos os momentos
 
+## Características
+
+- 🎨 **Interface Web Moderna**: Interface responsiva com Next.js 14 e shadcn/ui
+- 🚀 **API RESTful**: Backend FastAPI com WebSocket para progresso em tempo real
+- 📊 **Visualizações**: Gráficos interativos e estatísticas detalhadas
+- 🎥 **Comparação de Vídeos**: Visualize vídeo original e processado lado a lado
+- 📱 **Responsivo**: Funciona em desktop, tablet e mobile
+- 🌙 **Dark Mode**: Suporte para modo claro e escuro
+
 ## Estrutura do Projeto
 
 ```
 .
-├── people_counter.py      # Script para contagem de pessoas
-├── vehicle_counter.py     # Script para contagem de veículos
-├── requirements.txt       # Dependências do projeto
-├── videos/
-│   ├── input/            # Coloque seus vídeos aqui
-│   └── output/           # Vídeos processados serão salvos aqui
+├── frontend/              # Aplicação Next.js
+│   ├── app/              # App Router do Next.js
+│   ├── components/       # Componentes React
+│   │   ├── ui/          # Componentes shadcn/ui
+│   │   ├── upload-zone.tsx
+│   │   ├── video-player.tsx
+│   │   ├── stats-card.tsx
+│   │   └── processing-status.tsx
+│   └── lib/             # Utilitários
+├── backend/              # API FastAPI
+│   ├── main.py          # Servidor principal
+│   ├── routers/         # Endpoints da API
+│   │   ├── people.py
+│   │   └── vehicles.py
+│   └── utils/           # Utilitários
+├── people_counter.py     # Script CLI para contagem de pessoas
+├── vehicle_counter.py    # Script CLI para contagem de veículos
+├── requirements.txt      # Dependências Python
 └── README.md
 ```
 
 ## Requisitos
 
+### Backend
 - Python 3.8 ou superior
 - pip
 
+### Frontend
+- Node.js 18 ou superior
+- npm ou yarn
+
 ## Instalação
 
-1. Clone o repositório:
+### 1. Clone o repositório
 ```bash
 git clone <repository-url>
 cd concess1
 ```
 
-2. Crie um ambiente virtual (recomendado):
+### 2. Backend Setup
+
+Crie um ambiente virtual e instale as dependências:
+
 ```bash
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
 # ou
 venv\Scripts\activate  # Windows
+
+pip install -r requirements.txt
 ```
 
-3. Instale as dependências:
+### 3. Frontend Setup
+
+Instale as dependências do Node.js:
+
 ```bash
-pip install -r requirements.txt
+cd frontend
+npm install
+cd ..
 ```
 
 ## Uso
 
-### Contador de Pessoas
+### Opção 1: Interface Web (Recomendado)
+
+#### 1. Inicie o Backend
+```bash
+cd backend
+python main.py
+```
+
+O backend estará rodando em `http://localhost:8000`
+- API Docs: `http://localhost:8000/docs`
+- WebSocket: `ws://localhost:8000/ws/{job_id}`
+
+#### 2. Inicie o Frontend
+Em outro terminal:
+
+```bash
+cd frontend
+npm run dev
+```
+
+O frontend estará rodando em `http://localhost:3000`
+
+#### 3. Use a Interface
+
+1. Acesse `http://localhost:3000` no navegador
+2. Escolha entre "Pessoas" ou "Veículos"
+3. Faça upload de um vídeo (arraste ou clique)
+4. Ajuste o threshold de confiança (opcional)
+5. Clique em "Processar Vídeo"
+6. Acompanhe o progresso em tempo real
+7. Visualize os resultados com estatísticas e gráficos
+8. Baixe o vídeo processado ou CSV com dados
+
+### Opção 2: Scripts CLI (Linha de Comando)
+
+#### Contador de Pessoas
 
 Para processar um vídeo e contar pessoas:
 
@@ -169,6 +240,70 @@ detectam mais objetos mas podem incluir falsos positivos.
 
 ### Performance lenta
 Considere usar um modelo menor (nano já é o menor) ou processar o vídeo em uma resolução menor.
+
+## Stack Tecnológico
+
+### Frontend
+- **Framework**: Next.js 14 (App Router)
+- **UI Library**: shadcn/ui
+- **Styling**: Tailwind CSS v4
+- **Icons**: Lucide React
+- **Charts**: Recharts
+- **File Upload**: React Dropzone
+- **Language**: TypeScript
+
+### Backend
+- **Framework**: FastAPI
+- **WebSocket**: Para progresso em tempo real
+- **CORS**: Habilitado para desenvolvimento
+- **Video Processing**: OpenCV + Ultralytics YOLO
+- **Language**: Python 3.8+
+
+### AI/ML
+- **Model**: YOLOv11 Nano (yolo11n.pt)
+- **Framework**: Ultralytics
+- **Detection**: COCO dataset (80 classes)
+
+## API Endpoints
+
+### People Counter
+- `POST /api/people/upload` - Upload de vídeo
+- `POST /api/people/process/{job_id}` - Iniciar processamento
+- `GET /api/people/status/{job_id}` - Status do job
+- `GET /api/people/results/{job_id}` - Resultados
+- `GET /api/people/download/video/{job_id}` - Download vídeo
+- `GET /api/people/download/csv/{job_id}` - Download CSV
+
+### Vehicle Counter
+- `POST /api/vehicles/upload` - Upload de vídeo
+- `POST /api/vehicles/process/{job_id}` - Iniciar processamento
+- `GET /api/vehicles/status/{job_id}` - Status do job
+- `GET /api/vehicles/results/{job_id}` - Resultados
+- `GET /api/vehicles/download/video/{job_id}` - Download vídeo
+- `GET /api/vehicles/download/csv/{job_id}` - Download CSV
+
+### WebSocket
+- `WS /ws/{job_id}` - Progresso em tempo real
+
+Documentação completa da API: `http://localhost:8000/docs`
+
+## Componentes UI
+
+O projeto utiliza os seguintes componentes shadcn/ui:
+- Button
+- Card
+- Tabs
+- Progress
+- Badge
+- Slider
+- Alert
+- Input
+
+E componentes customizados:
+- UploadZone (drag & drop)
+- VideoPlayer
+- StatsCard
+- ProcessingStatus
 
 ## Licença
 

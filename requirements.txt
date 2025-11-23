@@ -1,3 +1,11 @@
+# Video Processing
 ultralytics>=8.0.0
 opencv-python>=4.8.0
 numpy>=1.24.0
+
+# Backend API
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+python-multipart>=0.0.9
+aiofiles>=24.1.0
+websockets>=13.0
